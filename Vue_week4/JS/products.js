@@ -1,11 +1,12 @@
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js';
+import pagination from './pagination.js'
 
 const site = "https://vue3-course-api.hexschool.io/v2";
 const api_path = 'tttom3669';
 
-
 let productModal = {};
 let delProductModal = {};
+
 const app = createApp({
     data() {
         return {
@@ -26,12 +27,14 @@ const app = createApp({
                 ?.split('=')[1];
             // headers 夾帶 token (有儲存時)
             axios.defaults.headers.common['Authorization'] = cookieValue;
+            this.getProducts();
         },
-        // 取得產品資料
-        getProducts() {
-            axios.get(`${site}/api/${api_path}/admin/products/all`)
+        // 取得產品資料 
+        getProducts(page = 1) {
+            axios.get(`${site}/api/${api_path}/admin/products/?page=${page}`)
                 .then((res) => {
                     this.products = res.data.products;
+                    this.page = res.data.pagination; // 取得頁數
                 }).catch((err) => {
                     alert(err.data.message);
                     window.location = "login.html";
@@ -43,31 +46,28 @@ const app = createApp({
             //新增產品
             let apiMethod = 'post';
             let apiUrl = `${site}/api/${api_path}/admin/product`;
+
             //修改產品
             if (!this.isNew) {
                 apiMethod = 'put';
                 apiUrl = `${site}/api/${api_path}/admin/product/${this.tempProduct.id}`;
             }
 
-            axios({
-                method: apiMethod,
-                url: apiUrl,
-                data: { data: { ...this.tempProduct } },
-            }).then((res) => {
-                alert(res.data.message);
+            axios[apiMethod](apiUrl, { data: this.tempProduct }).then((res) => {
                 productModal.hide(); // 關閉產品頁面
                 this.getProducts();
+                alert(res.data.message);
             }).catch((err) => {
                 alert(err.data.message);
             });
         },
         // 刪除產品資料
         delProduct() {
-            axios.delete(`${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`)
+            axios.delete(`${site}/api/${api_path}/admin/product/${this.tempProduct.id}`)
                 .then((res) => {
-                    alert(res.data.message);
                     delProductModal.hide(); // 關閉刪除頁面
-                    this.getData();
+                    this.getProducts();
+                    alert(res.data.message);
                 }).catch((err) => {
                     alert(err.data.message);
                 });
@@ -103,12 +103,27 @@ const app = createApp({
             this.tempProduct.imagesUrl.push(''); //多圖區增加存放圖片
         }
     },
+    components: {
+        pagination
+    },
     mounted() {
+        // 登入驗證
         this.checkAdmin();
-        this.getProducts();
-        //建立 Bootstrap modal 實體
+        // 建立 Bootstrap modal 實體
         productModal = new bootstrap.Modal(document.querySelector("#productModal"));
         delProductModal = new bootstrap.Modal(document.querySelector("#delProductModal"));
     },
 });
+
+// 編輯/新增產品頁面元件
+app.component('product-model', {
+    props: ['tempProduct', 'updateProduct', 'createImages'],
+    template: `#product-modal-template`
+})
+// 刪除產品頁面元件
+app.component('delProductModal', {
+    props: ['tempProduct', 'delProduct'],
+    template: `#del-modal-template`
+});
+
 app.mount('#app');
