@@ -20,7 +20,7 @@ const app = {
                 this.render();
             }).catch((err) => {
                 alert('請重新登入');
-                window.location = 'login.html';
+                window.location = './login.html';
             });
         },
         getProducts() {

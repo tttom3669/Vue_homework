@@ -17,7 +17,7 @@ const app = {
                 const { token, expired } = res.data;
                 // 把token和時效存在cookie中
                 document.cookie = `myToken=${token}; expires=${new Date(expired)};`;
-                window.location = 'productList.html';
+                window.location = './productList.html';
             }).catch((err) => {
                 alert('帳號密碼錯誤，請重新輸入');
             });
