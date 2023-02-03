@@ -37,7 +37,7 @@ const app = createApp({
                     this.page = res.data.pagination; // 取得頁數
                 }).catch((err) => {
                     alert(err.data.message);
-                    window.location = "login.html";
+                    window.location = "productList.html";
                 });
         },
         // 更新產品資料
