@@ -18,7 +18,7 @@ const app = createApp({
                 const { token, expired } = res.data;
                 // 把token和時效存在cookie中
                 document.cookie = `yoToken=${token}; expires=${new Date(expired)};`;
-                window.location = 'products.html'; // 轉址
+                window.location = './products.html'; // 轉址
             }).catch(() => {
                 alert('帳號密碼錯誤，請重新輸入');
             });
