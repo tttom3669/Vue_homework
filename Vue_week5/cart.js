@@ -8,7 +8,7 @@ const apiPath = 'tttom3669';
 // - 按按鈕，顯示單一產品細節 v
 // - 加入購物車 (可選擇數量) v
 // - 購物車列表 v
-// - 調整數量
+// - 調整數量 v
 // - 刪除品項
 
 
@@ -19,8 +19,8 @@ const app = createApp({
             tempProduct: {},
             cart: {},
             loadingStatus: {
-                loadingItem: '', // 存 id，判斷是否更新中
-                loadingType: '', // 判斷種類
+                loadingItem: '', // 存 id、種類，判斷是否讀取中
+                loadingType: '',
             },
         }
     },
@@ -65,8 +65,8 @@ const app = createApp({
                 .then((res) => {
                     console.log('加入購物車', res.data);
                     this.$refs.productModal.closeModal();
-                    this.getCarts();
                     this.loadingStatus.loadingItem = '';
+                    this.getCarts();
                 });
         },
         //取得購物車
@@ -75,6 +75,24 @@ const app = createApp({
                 .then((res) => {
                     console.log('取得購物車', res.data);
                     this.cart = res.data.data;
+                });
+        },
+        // 更新購物車
+        updateCartItem(item) {
+            const data = {
+                product_id: item.id,
+                qty: item.qty
+            };
+            this.loadingStatus = {
+                loadingItem: item.id,
+                loadingType: 'updateCartItem',
+            }
+            console.log(item, this.loadingStatus);
+            axios.put(`${apiUrl}/api/${apiPath}/cart/${item.id}`, { data })
+                .then((res) => {
+                    console.log('更新購物車', res.data);
+                    this.loadingStatus.loadingItem = '';
+                    this.getCarts();
                 });
         }
     },
