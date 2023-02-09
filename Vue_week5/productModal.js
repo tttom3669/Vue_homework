@@ -2,6 +2,7 @@ export default {
     data() {
         return {
             modal: {},
+            qty: 1,
         }
     },
     props: ['tempProduct'],
@@ -9,6 +10,9 @@ export default {
     methods: {
         openModal() {
             this.modal.show();
+        },
+        closeModal() {
+            this.modal.hide();
         }
     },
     mounted() {

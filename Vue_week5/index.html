@@ -18,7 +18,7 @@
         <div class="container">
             <div class="mt-4">
                 <!-- 產品Modal -->
-                <product-modal ref="productModal" :temp-product="tempProduct"></product-modal>
+                <product-modal ref="productModal" :temp-product="tempProduct" @add-to-cart="addToCart"></product-modal>
                 <!-- 產品Modal -->
 
                 <table class="table align-middle">
@@ -33,7 +33,8 @@
                     <tbody>
                         <tr v-for="product in products" :key="product.id">
                             <td style="width: 200px">
-                                <div style="height: 100px; background-size: cover; background-position: center"></div>
+                                <div style="height: 100px; background-size: cover; background-position: center"
+                                    :style="{ backgroundImage: `url(${product.imageUrl})`}"></div>
                             </td>
                             <!-- 商品名稱 -->
                             <td>
@@ -52,12 +53,16 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <button type="button" class="btn btn-outline-secondary"
-                                        @click="getProduct(product.id)">
-                                        <i class="fas fa-spinner fa-pulse"></i>
+                                        @click="getProduct(product.id)"
+                                        :disabled="loadingStatus.loadingItem===product.id">
+                                        <i class="fas fa-spinner fa-pulse"
+                                            v-if="loadingStatus.loadingItem===product.id && loadingStatus.loadingType==='getProduct'"></i>
                                         查看更多
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger">
-                                        <i class="fas fa-spinner fa-pulse"></i>
+                                    <button type="button" class="btn btn-outline-danger" @click="addToCart(product.id)"
+                                        :disabled="loadingStatus.loadingItem===product.id">
+                                        <i class="fas fa-spinner fa-pulse"
+                                            v-if="loadingStatus.loadingItem===product.id && loadingStatus.loadingType==='addToCart'"></i>
                                         加到購物車
                                     </button>
                                 </div>
@@ -79,8 +84,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- <template v-if="cart.carts">
-                            <tr>
+                        <template v-if="cart.carts">
+                            <tr v-for="item in cart.carts" :key="item.id">
                                 <td>
                                     <button type="button" class="btn btn-outline-danger btn-sm">
                                         <i class="fas fa-spinner fa-pulse"></i>
@@ -88,7 +93,8 @@
                                     </button>
                                 </td>
                                 <td>
-                                    {{ }}
+                                    <!-- 商品名稱 -->
+                                    {{ item.product.title }}
                                     <div class="text-success">
                                         已套用優惠券
                                     </div>
@@ -96,26 +102,28 @@
                                 <td>
                                     <div class="input-group input-group-sm">
                                         <div class="input-group mb-3">
-                                            <input min="1" type="number" class="form-control">
-                                            <span class="input-group-text" id="basic-addon2">{{ }}</span>
+                                            <input min="1" type="number" class="form-control" v-model.number="item.qty">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                {{ item.product.unit }}
+                                            </span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="text-end">
-                                    <small class="text-success">折扣價：</small>
-                                    {{ }}
+                                    <!-- <small class="text-success">折扣價：</small> -->
+                                    {{ item.total }}
                                 </td>
                             </tr>
-                        </template> -->
+                        </template>
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3" class="text-end">總計</td>
-                            <td class="text-end">{{ }}</td>
+                            <td class="text-end">{{ cart.total }}</td>
                         </tr>
                         <tr>
                             <td colspan="3" class="text-end text-success">折扣價</td>
-                            <td class="text-end text-success">{{ }}</td>
+                            <td class="text-end text-success">{{ cart.final_total }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -194,8 +202,11 @@
                        
                                 <div>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" min="1">
-                                        <button type="button" class="btn btn-primary">加入購物車</button>
+                                        <!-- 商品數量 -->
+                                        <select  class="form-select" v-model.number="qty">
+                                            <option :value="i" v-for="i in 20" :key="i+'num'">{{ i }}</option>
+                                        </select>
+                                        <button type="button" class="btn btn-primary" @click="$emit('add-to-cart',tempProduct.id,qty)">加入購物車</button>
                                     </div>
                                 </div>
                             </div>

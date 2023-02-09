@@ -5,9 +5,9 @@ const apiPath = 'tttom3669';
 
 // - 切版 v
 // - 取得產品列表 v
-// - 按按鈕，顯示單一產品細節
-// - 加入購物車 (可選擇數量)
-// - 購物車列表
+// - 按按鈕，顯示單一產品細節 v
+// - 加入購物車 (可選擇數量) v
+// - 購物車列表 v
 // - 調整數量
 // - 刪除品項
 
@@ -17,6 +17,11 @@ const app = createApp({
         return {
             products: [],
             tempProduct: {},
+            cart: {},
+            loadingStatus: {
+                loadingItem: '', // 存 id，判斷是否更新中
+                loadingType: '', // 判斷種類
+            },
         }
     },
     methods: {
@@ -32,6 +37,10 @@ const app = createApp({
         },
         // 顯示單一產品細節
         getProduct(id) {
+            this.loadingStatus = {
+                loadingItem: id,
+                loadingType: 'getProduct',
+            }
             axios.get(`${apiUrl}/api/${apiPath}/product/${id}`)
                 .then((res) => {
                     console.log('單一產品列表', res.data
@@ -39,6 +48,33 @@ const app = createApp({
                     this.tempProduct = res.data
                         .product;
                     this.$refs.productModal.openModal();
+                    this.loadingStatus.loadingItem = '';
+                });
+        },
+        // 加入購物車
+        addToCart(product_id, qty = 1) {
+            const data = {
+                product_id,
+                qty
+            };
+            this.loadingStatus = {
+                loadingItem: product_id,
+                loadingType: 'addToCart',
+            }
+            axios.post(`${apiUrl}/api/${apiPath}/cart`, { data })
+                .then((res) => {
+                    console.log('加入購物車', res.data);
+                    this.$refs.productModal.closeModal();
+                    this.getCarts();
+                    this.loadingStatus.loadingItem = '';
+                });
+        },
+        //取得購物車
+        getCarts() {
+            axios.get(`${apiUrl}/api/${apiPath}/cart`)
+                .then((res) => {
+                    console.log('取得購物車', res.data);
+                    this.cart = res.data.data;
                 });
         }
     },
@@ -47,6 +83,7 @@ const app = createApp({
     },
     mounted() {
         this.getProducts();
+        this.getCarts();
     },
 });
 
