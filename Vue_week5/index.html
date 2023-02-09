@@ -18,6 +18,7 @@
         <div class="container">
             <div class="mt-4">
                 <!-- 產品Modal -->
+                <product-modal ref="productModal" :temp-product="tempProduct"></product-modal>
                 <!-- 產品Modal -->
 
                 <table class="table align-middle">
@@ -40,7 +41,8 @@
                             </td>
                             <!-- 商品價格 -->
                             <td>
-                                <div class="h5" v-if="product.price === product.origin_price">{{ product.price }} 元
+                                <div class="h5" v-if="product.price === product.origin_price">
+                                    {{ product.price }} 元
                                 </div>
                                 <template v-else>
                                     <del class="h6">原價 {{ product.origin_price }} 元</del>
@@ -49,7 +51,8 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <button type="button" class="btn btn-outline-secondary">
+                                    <button type="button" class="btn btn-outline-secondary"
+                                        @click="getProduct(product.id)">
                                         <i class="fas fa-spinner fa-pulse"></i>
                                         查看更多
                                     </button>
@@ -159,43 +162,49 @@
         </div>
     </div>
     <script type="text/x-template" id="userProductModal">
-<div class="modal fade" id="productModal" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalLabel" aria-hidden="true" ref="modal">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content border-0">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="exampleModalLabel">
-          <span>{{  }}</span>
-      </h5>
-        <button type="button" class="btn-close"
-                data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-6">
-            <img class="img-fluid" :src="..." alt="">
-      </div>
-          <div class="col-sm-6">
-            <span class="badge bg-primary rounded-pill">{{  }}</span>
-            <p>商品描述：{{  }}</p>
-            <p>商品內容：{{  }}</p>
-            <div class="h5">{{  }} 元</div>
-            <del class="h6">原價 {{ }} 元</del>
-            <div class="h5">現在只要 {{  }} 元</div>
-            <div>
-              <div class="input-group">
-                <input type="number" class="form-control"
-                       min="1">
-                <button type="button" class="btn btn-primary">加入購物車</button>
-      </div>
-      </div>
-      </div>
-          <!-- col-sm-6 end -->
-      </div>
-      </div>
-      </div>
-      </div>
-      </div>
+        <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" ref="modal">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content border-0">
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <!--商品名稱-->
+                            <span>{{ tempProduct.title }}</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <img class="img-fluid" :src="tempProduct.imageUrl" :alt="tempProduct.title">
+                            </div>
+                            <div class="col-sm-6">
+                                <!--商品類別-->
+                                <span class="badge bg-primary rounded-pill">{{ tempProduct.category }}</span>
+                                <p>商品描述：{{ tempProduct.description }}</p>
+                                <p>商品內容：{{ tempProduct.content }}</p>
+                                <!-- 商品價格 -->
+                                <div class="h5" v-if="tempProduct.price === tempProduct.origin_price">
+                                    {{ tempProduct.price }} 元
+                                </div>
+                                <template v-else>
+                                    <del class="h6">原價 {{ tempProduct.origin_price }} 元</del>
+                                    <div class="h5">現在只要 {{ tempProduct.price }} 元</div>
+                                </template>
+                       
+                                <div>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" min="1">
+                                        <button type="button" class="btn btn-primary">加入購物車</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col-sm-6 end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </script>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'

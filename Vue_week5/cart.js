@@ -1,4 +1,5 @@
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js';
+import productModal from './productModal.js';
 const apiUrl = "https://vue3-course-api.hexschool.io/v2";
 const apiPath = 'tttom3669';
 
@@ -15,6 +16,7 @@ const app = createApp({
     data() {
         return {
             products: [],
+            tempProduct: {},
         }
     },
     methods: {
@@ -28,10 +30,25 @@ const app = createApp({
                         .products;
                 });
         },
+        // 顯示單一產品細節
+        getProduct(id) {
+            axios.get(`${apiUrl}/api/${apiPath}/product/${id}`)
+                .then((res) => {
+                    console.log('單一產品列表', res.data
+                        .product);
+                    this.tempProduct = res.data
+                        .product;
+                    this.$refs.productModal.openModal();
+                });
+        }
+    },
+    components: {
+        productModal,
     },
     mounted() {
         this.getProducts();
     },
 });
+
 
 app.mount('#app');
