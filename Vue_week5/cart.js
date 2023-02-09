@@ -9,7 +9,9 @@ const apiPath = 'tttom3669';
 // - 加入購物車 (可選擇數量) v
 // - 購物車列表 v
 // - 調整數量 v
-// - 刪除品項
+// - 刪除品項 v
+// alert 訊息、catch 錯誤
+// 表單驗證
 
 
 const app = createApp({
@@ -65,8 +67,8 @@ const app = createApp({
                 .then((res) => {
                     console.log('加入購物車', res.data);
                     this.$refs.productModal.closeModal();
-                    this.loadingStatus.loadingItem = '';
                     this.getCarts();
+                    this.loadingStatus.loadingItem = '';
                 });
         },
         //取得購物車
@@ -80,19 +82,40 @@ const app = createApp({
         // 更新購物車
         updateCartItem(item) {
             const data = {
-                product_id: item.id,
+                product_id: item.product.id, // 產品的 id
                 qty: item.qty
             };
-            this.loadingStatus = {
-                loadingItem: item.id,
-                loadingType: 'updateCartItem',
-            }
+            this.loadingStatus.loadingItem = item.id; // 購物車的 id
+
             console.log(item, this.loadingStatus);
             axios.put(`${apiUrl}/api/${apiPath}/cart/${item.id}`, { data })
                 .then((res) => {
                     console.log('更新購物車', res.data);
-                    this.loadingStatus.loadingItem = '';
                     this.getCarts();
+                    this.loadingStatus.loadingItem = '';
+                });
+        },
+        // 刪除購物車單一品項
+        deleteItem(item) {
+            this.loadingStatus = {
+                loadingItem: item.id,
+                loadingType: 'deleteItem',
+            }
+            axios.delete(`${apiUrl}/api/${apiPath}/cart/${item.id}`)
+                .then((res) => {
+                    console.log('刪除單一購物車', res.data);
+                    this.getCarts();
+                    this.loadingStatus.loadingItem = '';
+                });
+        },
+        // 刪除全部購物車
+        deleteCarts() {
+            this.loadingStatus.loadingType = 'deleteCarts';
+            axios.delete(`${apiUrl}/api/${apiPath}/carts`)
+                .then((res) => {
+                    console.log('刪除全部購物車', res.data);
+                    this.getCarts();
+                    this.loadingStatus.loadingType = '';
                 });
         }
     },
