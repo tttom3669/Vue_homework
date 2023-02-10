@@ -8,18 +8,10 @@ const { loadLocaleFromURL, localize } = VeeValidateI18n;
 const apiUrl = "https://vue3-course-api.hexschool.io/v2";
 const apiPath = 'tttom3669';
 
-// - 切版 v
-// - 取得產品列表 v
-// - 按按鈕，顯示單一產品細節 v
-// - 加入購物車 (可選擇數量) v
-// - 購物車列表 v
-// - 調整數量 v
-// - 刪除品項 v
-// alert 訊息、catch 錯誤 v
-// 表單驗證
+// 插入規則
 Object.keys(VeeValidateRules).forEach(rule => {
     if (rule !== 'default') {
-        VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+        defineRule(rule, VeeValidateRules[rule]);
     }
 });
 // 讀取外部的資源
@@ -55,8 +47,6 @@ const app = createApp({
         getProducts() {
             axios.get(`${apiUrl}/api/${apiPath}/products/all`)
                 .then((res) => {
-                    console.log('產品列表', res.data
-                        .products);
                     this.products = res.data
                         .products;
                 }).catch((err) => {
@@ -71,8 +61,6 @@ const app = createApp({
             }
             axios.get(`${apiUrl}/api/${apiPath}/product/${id}`)
                 .then((res) => {
-                    console.log('單一產品列表', res.data
-                        .product);
                     this.tempProduct = res.data
                         .product;
                     this.$refs.productModal.openModal();
@@ -94,7 +82,6 @@ const app = createApp({
             this.$refs.productModal.closeModal();
             axios.post(`${apiUrl}/api/${apiPath}/cart`, { data })
                 .then((res) => {
-                    console.log('加入購物車', res.data);
                     alert(res.data.message);
                     this.getCarts();
                     this.loadingStatus.loadingItem = '';
@@ -106,7 +93,6 @@ const app = createApp({
         getCarts() {
             axios.get(`${apiUrl}/api/${apiPath}/cart`)
                 .then((res) => {
-                    console.log('取得購物車', res.data);
                     this.cart = res.data.data;
                 }).catch((err) => {
                     alert(err.response.data.message);
@@ -123,7 +109,6 @@ const app = createApp({
             console.log(item, this.loadingStatus);
             axios.put(`${apiUrl}/api/${apiPath}/cart/${item.id}`, { data })
                 .then((res) => {
-                    console.log('更新購物車', res.data);
                     alert(res.data.message);
                     this.getCarts();
                     this.loadingStatus.loadingItem = '';
@@ -139,7 +124,6 @@ const app = createApp({
             }
             axios.delete(`${apiUrl}/api/${apiPath}/cart/${item.id}`)
                 .then((res) => {
-                    console.log('刪除單一購物車', res.data);
                     alert(res.data.message);
                     this.getCarts();
                     this.loadingStatus.loadingItem = '';
@@ -152,7 +136,6 @@ const app = createApp({
             this.loadingStatus.loadingType = 'deleteCarts';
             axios.delete(`${apiUrl}/api/${apiPath}/carts`)
                 .then((res) => {
-                    console.log('清空購物車', res.data);
                     alert('已清空購物車');
                     this.getCarts();
                     this.loadingStatus.loadingType = '';
@@ -187,9 +170,5 @@ const app = createApp({
         this.getCarts();
     },
 });
-
-// app.component('VForm', VeeValidate.Form);
-// app.component('VField', VeeValidate.Field);
-// app.component('ErrorMessage', VeeValidate.ErrorMessage);
 
 app.mount('#app');

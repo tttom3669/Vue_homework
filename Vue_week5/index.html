@@ -100,9 +100,9 @@
                                 <td>
                                     <!-- 商品名稱 -->
                                     {{ item.product.title }}
-                                    <div class="text-success">
+                                    <!-- <div class="text-success">
                                         已套用優惠券
-                                    </div>
+                                    </div> -->
                                 </td>
                                 <td>
                                     <div class="input-group input-group-sm">
@@ -141,7 +141,6 @@
             </div>
             <div class="my-5 row justify-content-center">
                 <v-form ref="form" class="col-md-6" v-slot="{ errors }" @submit="onSubmit">
-                    {{errors}}
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <v-field id="email" name="email" type="email" class="form-control"
