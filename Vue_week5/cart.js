@@ -10,7 +10,7 @@ const apiPath = 'tttom3669';
 // - 購物車列表 v
 // - 調整數量 v
 // - 刪除品項 v
-// alert 訊息、catch 錯誤
+// alert 訊息、catch 錯誤 v
 // 表單驗證
 
 
@@ -35,6 +35,8 @@ const app = createApp({
                         .products);
                     this.products = res.data
                         .products;
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         },
         // 顯示單一產品細節
@@ -51,6 +53,8 @@ const app = createApp({
                         .product;
                     this.$refs.productModal.openModal();
                     this.loadingStatus.loadingItem = '';
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         },
         // 加入購物車
@@ -63,12 +67,15 @@ const app = createApp({
                 loadingItem: product_id,
                 loadingType: 'addToCart',
             }
+            this.$refs.productModal.closeModal();
             axios.post(`${apiUrl}/api/${apiPath}/cart`, { data })
                 .then((res) => {
                     console.log('加入購物車', res.data);
-                    this.$refs.productModal.closeModal();
+                    alert(res.data.message);
                     this.getCarts();
                     this.loadingStatus.loadingItem = '';
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         },
         //取得購物車
@@ -77,6 +84,8 @@ const app = createApp({
                 .then((res) => {
                     console.log('取得購物車', res.data);
                     this.cart = res.data.data;
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         },
         // 更新購物車
@@ -91,8 +100,11 @@ const app = createApp({
             axios.put(`${apiUrl}/api/${apiPath}/cart/${item.id}`, { data })
                 .then((res) => {
                     console.log('更新購物車', res.data);
+                    alert(res.data.message);
                     this.getCarts();
                     this.loadingStatus.loadingItem = '';
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         },
         // 刪除購物車單一品項
@@ -104,18 +116,24 @@ const app = createApp({
             axios.delete(`${apiUrl}/api/${apiPath}/cart/${item.id}`)
                 .then((res) => {
                     console.log('刪除單一購物車', res.data);
+                    alert(res.data.message);
                     this.getCarts();
                     this.loadingStatus.loadingItem = '';
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         },
-        // 刪除全部購物車
+        // 清空購物車
         deleteCarts() {
             this.loadingStatus.loadingType = 'deleteCarts';
             axios.delete(`${apiUrl}/api/${apiPath}/carts`)
                 .then((res) => {
-                    console.log('刪除全部購物車', res.data);
+                    console.log('清空購物車', res.data);
+                    alert('已清空購物車');
                     this.getCarts();
                     this.loadingStatus.loadingType = '';
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 });
         }
     },
