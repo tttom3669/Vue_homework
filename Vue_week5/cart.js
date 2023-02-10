@@ -135,7 +135,7 @@ const app = createApp({
         deleteCarts() {
             this.loadingStatus.loadingType = 'deleteCarts';
             axios.delete(`${apiUrl}/api/${apiPath}/carts`)
-                .then((res) => {
+                .then(() => {
                     alert('已清空購物車');
                     this.getCarts();
                     this.loadingStatus.loadingType = '';
@@ -147,15 +147,19 @@ const app = createApp({
             const phoneNumber = /^(09)[0-9]{8}$/
             return phoneNumber.test(value) ? true : '需要正確的電話號碼'
         }
-        ,
-        onSubmit() {
-            alert("已送出訂單");
-            this.user = {
-                name: '',
-                email: '',
-                tel: '',
-                address: '',
-                message: '',
+        , onSubmit() {
+            if (!this.cart.carts.length) {
+                alert("購物車內未有商品!");
+            } else {
+                alert("已送出訂單");
+                this.deleteCarts();
+                this.user = {
+                    name: '',
+                    email: '',
+                    tel: '',
+                    address: '',
+                    message: '',
+                }
             }
         }
     },
