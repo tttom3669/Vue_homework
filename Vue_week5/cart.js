@@ -1,5 +1,10 @@
-import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js';
+// import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js';
 import productModal from './productModal.js';
+
+const { createApp } = Vue;
+const { defineRule, Form, Field, ErrorMessage, configure } = VeeValidate;
+const { loadLocaleFromURL, localize } = VeeValidateI18n;
+
 const apiUrl = "https://vue3-course-api.hexschool.io/v2";
 const apiPath = 'tttom3669';
 
@@ -12,7 +17,19 @@ const apiPath = 'tttom3669';
 // - 刪除品項 v
 // alert 訊息、catch 錯誤 v
 // 表單驗證
+Object.keys(VeeValidateRules).forEach(rule => {
+    if (rule !== 'default') {
+        VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+    }
+});
+// 讀取外部的資源
+loadLocaleFromURL('./zh_TW.json');
 
+// Activate the locale
+configure({
+    generateMessage: localize('zh_TW'),
+    validateOnInput: true, // 調整為：輸入文字時，就立即進行驗證
+});
 
 const app = createApp({
     data() {
@@ -24,6 +41,13 @@ const app = createApp({
                 loadingItem: '', // 存 id、種類，判斷是否讀取中
                 loadingType: '',
             },
+            user: {
+                name: '',
+                email: '',
+                tel: '',
+                address: '',
+                message: '',
+            }
         }
     },
     methods: {
@@ -135,10 +159,28 @@ const app = createApp({
                 }).catch((err) => {
                     alert(err.response.data.message);
                 });
+        },
+        isPhone(value) {
+            const phoneNumber = /^(09)[0-9]{8}$/
+            return phoneNumber.test(value) ? true : '需要正確的電話號碼'
+        }
+        ,
+        onSubmit() {
+            alert("已送出訂單");
+            this.user = {
+                name: '',
+                email: '',
+                tel: '',
+                address: '',
+                message: '',
+            }
         }
     },
     components: {
         productModal,
+        VForm: Form,
+        VField: Field,
+        ErrorMessage: ErrorMessage,
     },
     mounted() {
         this.getProducts();
@@ -146,5 +188,8 @@ const app = createApp({
     },
 });
 
+// app.component('VForm', VeeValidate.Form);
+// app.component('VField', VeeValidate.Field);
+// app.component('ErrorMessage', VeeValidate.ErrorMessage);
 
 app.mount('#app');
