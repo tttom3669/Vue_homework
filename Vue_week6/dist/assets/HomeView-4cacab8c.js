@@ -1,0 +1,1 @@
+import{_ as e,o,c as s,d as t}from"./index-5fac9801.js";const c={},n={class:"home"},_=t("h1",null,"首頁",-1),a=[_];function r(d,i,p,l,f,h){return o(),s("div",n,a)}const u=e(c,[["render",r]]);export{u as default};
