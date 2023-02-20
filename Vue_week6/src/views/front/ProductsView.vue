@@ -69,7 +69,7 @@
 
 <script>
 import Swal from 'sweetalert2';
-import ProductModal from '@//components/ProductModal.vue';
+import ProductModal from '@/components/ProductModal.vue';
 
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 
